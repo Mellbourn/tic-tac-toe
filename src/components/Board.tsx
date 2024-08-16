@@ -1,9 +1,15 @@
-import { Box, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 const Board: React.FC = () => {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
+
+  // Using useColorModeValue inside the component body to set variables
+  const squareBg = useColorModeValue("gray.200", "gray.700");
+  const squareHoverBg = useColorModeValue("gray.300", "gray.600");
+  const xColor = "teal.500";
+  const oColor = "pink.500";
 
   const handleClick = (index: number) => {
     if (squares[index] || calculateWinner(squares)) return;
@@ -17,13 +23,16 @@ const Board: React.FC = () => {
     return (
       <GridItem
         w="100%"
-        h="100px"
-        border="1px solid black"
+        h="100%"
+        bg={squareBg}
         display="flex"
         alignItems="center"
         justifyContent="center"
-        fontSize="2xl"
+        fontSize="3xl"
+        fontWeight="bold"
+        color={squares[index] === "X" ? xColor : oColor}
         onClick={() => handleClick(index)}
+        _hover={{ cursor: "pointer", bg: squareHoverBg }}
       >
         {squares[index]}
       </GridItem>
@@ -37,10 +46,18 @@ const Board: React.FC = () => {
 
   return (
     <Box>
-      <Text mb={4} fontSize="xl">
+      <Text mb={4} fontSize="xl" fontWeight="bold" textAlign="center">
         {status}
       </Text>
-      <Grid templateColumns="repeat(3, 1fr)" gap={1}>
+      <Grid
+        templateColumns="repeat(3, 1fr)"
+        templateRows="repeat(3, 1fr)"
+        gap={2}
+        w={{ base: "260px", md: "300px" }}
+        h={{ base: "260px", md: "300px" }}
+        maxW="100%"
+        maxH="100%"
+      >
         {Array(9)
           .fill(null)
           .map((_, i) => renderSquare(i))}
