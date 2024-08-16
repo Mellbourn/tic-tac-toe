@@ -1,9 +1,17 @@
-import { Box, Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 
 const Board: React.FC = () => {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
+  const [gameOver, setGameOver] = useState(false);
 
   // Define color mode dependent variables
   const squareBg = useColorModeValue("gray.200", "gray.700");
@@ -12,11 +20,23 @@ const Board: React.FC = () => {
   const oColor = "pink.500";
 
   const handleClick = (index: number) => {
-    if (squares[index] || calculateWinner(squares)) return;
+    if (squares[index] || gameOver) return;
+
     const newSquares = squares.slice();
     newSquares[index] = isXNext ? "X" : "O";
     setSquares(newSquares);
     setIsXNext(!isXNext);
+
+    const winner = calculateWinner(newSquares);
+    if (winner) {
+      setGameOver(true);
+    }
+  };
+
+  const handleNewGame = () => {
+    setSquares(Array(9).fill(null));
+    setIsXNext(true);
+    setGameOver(false);
   };
 
   const renderSquare = (index: number) => {
@@ -48,8 +68,8 @@ const Board: React.FC = () => {
       : `Next player: ${isXNext ? "X" : "O"}`;
 
   return (
-    <Box>
-      <Text mb={4} fontSize="xl" fontWeight="bold" textAlign="center">
+    <Box textAlign="center">
+      <Text mb={4} fontSize="xl" fontWeight="bold">
         {status}
       </Text>
       <Grid
@@ -60,11 +80,17 @@ const Board: React.FC = () => {
         h={{ base: "260px", md: "300px" }}
         maxW="100%"
         maxH="100%"
+        mb={4}
       >
         {Array(9)
           .fill(null)
           .map((_, i) => renderSquare(i))}
       </Grid>
+      {gameOver && (
+        <Button onClick={handleNewGame} colorScheme="teal" mt={4}>
+          New Game
+        </Button>
+      )}
     </Box>
   );
 };
