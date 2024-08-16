@@ -5,7 +5,7 @@ const Board: React.FC = () => {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
 
-  // Using useColorModeValue inside the component body to set variables
+  // Define color mode dependent variables
   const squareBg = useColorModeValue("gray.200", "gray.700");
   const squareHoverBg = useColorModeValue("gray.300", "gray.600");
   const xColor = "teal.500";
@@ -40,9 +40,12 @@ const Board: React.FC = () => {
   };
 
   const winner = calculateWinner(squares);
-  const status = winner
-    ? `Winner: ${winner}`
-    : `Next player: ${isXNext ? "X" : "O"}`;
+  const status =
+    winner === "Draw"
+      ? "It's a draw!"
+      : winner
+      ? `Winner: ${winner}`
+      : `Next player: ${isXNext ? "X" : "O"}`;
 
   return (
     <Box>
@@ -66,7 +69,8 @@ const Board: React.FC = () => {
   );
 };
 
-const calculateWinner = (squares: Array<string | null>) => {
+// Function to calculate the winner or detect a draw
+const calculateWinner = (squares: Array<string | null>): string | null => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -77,12 +81,19 @@ const calculateWinner = (squares: Array<string | null>) => {
     [0, 4, 8],
     [2, 4, 6],
   ];
+
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }
   }
+
+  // Check for a draw
+  if (squares.every((square) => square !== null)) {
+    return "Draw";
+  }
+
   return null;
 };
 
