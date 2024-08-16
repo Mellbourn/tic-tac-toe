@@ -86,11 +86,16 @@ const Board: React.FC = () => {
           .fill(null)
           .map((_, i) => renderSquare(i))}
       </Grid>
-      {gameOver && (
-        <Button onClick={handleNewGame} colorScheme="teal" mt={4}>
-          New Game
-        </Button>
-      )}
+      <Button
+        onClick={handleNewGame}
+        colorScheme="teal"
+        mt={4}
+        visibility={gameOver ? "visible" : "hidden"}
+        opacity={gameOver ? 1 : 0}
+        pointerEvents={gameOver ? "auto" : "none"}
+      >
+        New Game
+      </Button>
     </Box>
   );
 };
